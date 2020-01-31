@@ -38,7 +38,8 @@ namespace Application.Activities
                 activity.City = request.City ?? activity.City;
                 activity.Venue = request.Venue ?? activity.Venue;
 
-                var success = await _context.SaveChangesAsync() > 0;
+                // If 0 then no changes sent to the database
+                var success = await _context.SaveChangesAsync() >= 0;
                 if (success) return Unit.Value;
                 throw new Exception("Problem saving changes");
             }
