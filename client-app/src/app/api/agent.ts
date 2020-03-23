@@ -6,9 +6,7 @@ axios.defaults.baseURL = 'http://localhost:5000/api';
 const responseBody = (response: AxiosResponse) => response.data;
 
 const sleep = (ms: number) => {
-  //debugger;
   return (response: AxiosResponse) => {
-    //debugger;
     return new Promise<AxiosResponse>(resolve =>
       setTimeout(() => resolve(response), ms)
     );

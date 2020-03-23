@@ -1,65 +1,26 @@
-import React, { SyntheticEvent } from 'react';
+import { observer } from 'mobx-react-lite';
+import React, { useContext } from 'react';
 import { Grid } from 'semantic-ui-react';
 
-import { Activity } from '../../../app/models/activity';
-import ActivityList from './ActivityList';
+import ActivityStore from '../../../app/stores/activityStore';
 import ActivityDetails from '../details/ActivityDetails';
 import ActivityForm from '../form/ActivityForm';
+import ActivityList from './ActivityList';
 
-interface Props {
-  activities: Activity[];
-  selectActivity: (id: string) => void;
-  selectedActivity: Activity | null;
-  editMode: boolean;
-  setEditMode: (editMode: boolean) => void;
-  setSelectedActivity: (activity: Activity | null) => void;
-  createActivity: (activity: Activity) => void;
-  editActivity: (activity: Activity) => void;
-  deleteActivity: (e: SyntheticEvent<HTMLButtonElement>, activity: Activity) => void;
-  submitting: boolean;
-  target: string;
-}
-
-export const ActivitiesDashboard: React.FC<Props> = ({
-  activities,
-  selectActivity,
-  selectedActivity,
-  editMode,
-  setEditMode,
-  setSelectedActivity,
-  createActivity,
-  editActivity,
-  deleteActivity,
-  submitting,
-  target
-}) => {
+export const ActivitiesDashboard: React.FC = () => {
+  const activityStore = useContext(ActivityStore);
+  const { editMode, selectedActivity } = activityStore;
   return (
     <Grid>
       <Grid.Column width={10}>
-        <ActivityList
-          activities={activities}
-          selectActivity={selectActivity}
-          deleteActivity={deleteActivity}
-          submitting={submitting}
-          target={target}
-        ></ActivityList>
+        <ActivityList />
       </Grid.Column>
       <Grid.Column width={6}>
-        {selectedActivity && !editMode && (
-          <ActivityDetails
-            activity={selectedActivity}
-            setEditMode={setEditMode}
-            setSelectedActivity={setSelectedActivity}
-          />
-        )}
+        {selectedActivity && !editMode && <ActivityDetails />}
         {editMode && (
           <ActivityForm
             key={(selectedActivity && selectedActivity.id) || 0}
             selectedActivity={selectedActivity!}
-            setEditMode={setEditMode}
-            createActivity={createActivity}
-            editActivity={editActivity}
-            submitting={submitting}
           ></ActivityForm>
         )}
       </Grid.Column>
@@ -67,4 +28,4 @@ export const ActivitiesDashboard: React.FC<Props> = ({
   );
 };
 
-export default ActivitiesDashboard;
+export default observer(ActivitiesDashboard);
