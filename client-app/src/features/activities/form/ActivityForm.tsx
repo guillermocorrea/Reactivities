@@ -1,51 +1,81 @@
-import React, { useState, FormEvent, useContext } from 'react';
+import React, { useState, FormEvent, useContext, useEffect } from 'react';
 import { Segment, Form, Button } from 'semantic-ui-react';
 import { Activity } from '../../../app/models/activity';
 import { v4 as uuid } from 'uuid';
 import ActivityStore from '../../../app/stores/activityStore';
 import { observer } from 'mobx-react-lite';
+import { RouteComponentProps } from 'react-router-dom';
 
-interface Props {
-  selectedActivity: Activity;
+interface DetailParams {
+  id: string;
 }
 
-const ActivityForm: React.FC<Props> = ({ selectedActivity }) => {
+const ActivityForm: React.FC<RouteComponentProps<DetailParams>> = ({
+  match,
+  history,
+}) => {
   const activityStore = useContext(ActivityStore);
-  const { createActivity, editActivity, submitting, cancelFormOpen } = activityStore;
+  const {
+    createActivity,
+    editActivity,
+    submitting,
+    loadActivity,
+    clearActivity,
+  } = activityStore;
 
-  const initializeForm = () => {
-    if (selectedActivity) return selectedActivity;
-    const newActivity = {
-      id: '',
-      title: '',
-      description: '',
-      category: '',
-      date: new Date().toISOString().split('T')[0],
-      city: '',
-      venue: ''
+  const [activityForForm, setActivity] = useState<Activity>({
+    id: '',
+    title: '',
+    description: '',
+    category: '',
+    date: new Date().toISOString().split('T')[0],
+    city: '',
+    venue: '',
+  });
+
+  useEffect(() => {
+    async function fetchData() {
+      if (match.params.id) {
+        const result = await loadActivity(match.params.id);
+        setActivity(result!);
+      }
+    }
+    fetchData();
+    return () => {
+      clearActivity();
     };
-    return newActivity;
-  };
+  }, [match.params.id, loadActivity, setActivity, clearActivity]);
 
-  const [activity, setActivity] = useState<Activity>(initializeForm());
   const handleInputChange = (
     event: FormEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = event.currentTarget;
-    setActivity({ ...activity, [name]: value });
+    setActivity({ ...activityForForm, [name]: value });
   };
 
   const handleSubmit = () => {
-    console.log(activity);
-    if (activity.id.length === 0) {
+    console.log(activityForForm);
+    if (activityForForm.id.length === 0) {
       const newActivity = {
-        ...activity,
-        id: uuid()
+        ...activityForForm,
+        id: uuid(),
       };
-      createActivity(newActivity);
+      createActivity(newActivity).then(() =>
+        history.push(`/activities/${newActivity.id}/details`)
+      );
     } else {
-      editActivity(activity);
+      editActivity(activityForForm).then(() =>
+        history.push(`/activities/${activityForForm.id}/details`)
+      );
     }
+  };
+
+  const handleCancel = () => {
+    if (!match.params.id) {
+      history.push(`/activities`);
+      return;
+    }
+    history.push(`/activities/${match.params.id}/details`);
   };
 
   return (
@@ -55,39 +85,39 @@ const ActivityForm: React.FC<Props> = ({ selectedActivity }) => {
           onChange={handleInputChange}
           name='title'
           placeholder='Title'
-          value={activity.title}
+          value={activityForForm.title}
         />
         <Form.TextArea
           onChange={handleInputChange}
           name='description'
           rows={2}
           placeholder='Description'
-          value={activity.description}
+          value={activityForForm.description}
         />
         <Form.Input
           onChange={handleInputChange}
           name='category'
           placeholder='Category'
-          value={activity.category}
+          value={activityForForm.category}
         />
         <Form.Input
           onChange={handleInputChange}
           name='date'
           type='datetime-local'
           placeholder='Date'
-          value={activity.date}
+          value={activityForForm.date}
         />
         <Form.Input
           onChange={handleInputChange}
           name='city'
           placeholder='City'
-          value={activity.city}
+          value={activityForForm.city}
         />
         <Form.Input
           onChange={handleInputChange}
           name='venue'
           placeholder='Venue'
-          value={activity.venue}
+          value={activityForForm.venue}
         />
         <Button
           loading={submitting}
@@ -100,7 +130,7 @@ const ActivityForm: React.FC<Props> = ({ selectedActivity }) => {
           floated='right'
           type='button'
           content='Cancel'
-          onClick={() => cancelFormOpen()}
+          onClick={handleCancel}
         />
       </Form>
     </Segment>
