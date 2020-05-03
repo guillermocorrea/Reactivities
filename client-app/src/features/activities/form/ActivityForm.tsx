@@ -54,7 +54,6 @@ const ActivityForm: React.FC<RouteComponentProps<DetailParams>> = ({
   };
 
   const handleSubmit = () => {
-    console.log(activityForForm);
     if (activityForForm.id.length === 0) {
       const newActivity = {
         ...activityForForm,
