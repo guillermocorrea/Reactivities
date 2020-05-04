@@ -3,7 +3,29 @@ export interface Activity {
   title: string;
   description: string;
   category: string;
-  date: Date | null;
+  date: Date;
   city: string;
   venue: string;
+}
+
+export interface ActivityFormValues extends Partial<Activity> {
+  time?: Date;
+}
+
+export class ActivityFormViewModel implements ActivityFormValues {
+  id?: string = undefined;
+  title?: '';
+  description?: '';
+  category?: '';
+  date?: undefined;
+  time?: undefined;
+  city?: '';
+  venue?: '';
+
+  constructor(fromActivity?: ActivityFormValues) {
+    if (fromActivity && fromActivity.date) {
+      fromActivity.time = fromActivity.date;
+    }
+    Object.assign(this, fromActivity);
+  }
 }

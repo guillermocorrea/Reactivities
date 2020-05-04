@@ -1,6 +1,6 @@
-import React, { useState, FormEvent, useContext, useEffect } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { Segment, Form, Button, Grid } from 'semantic-ui-react';
-import { Activity } from '../../../app/models/activity';
+import { ActivityFormViewModel } from '../../../app/models/activity';
 import { v4 as uuid } from 'uuid';
 import ActivityStore from '../../../app/stores/activityStore';
 import { observer } from 'mobx-react-lite';
@@ -11,6 +11,28 @@ import TextAreaInput from 'app/common/form/TextAreaInput';
 import SelectInput from 'app/common/form/SelectInput';
 import { category } from 'app/common/options/categoryOptions';
 import DateInput from 'app/common/form/DateInput';
+import { combinedDateAndTime } from 'app/common/util/util';
+import {
+  combineValidators,
+  isRequired,
+  composeValidators,
+  hasLengthGreaterThan,
+} from 'revalidate';
+
+const validate = combineValidators({
+  title: isRequired({ message: 'The event title is required' }),
+  category: isRequired('Category'),
+  description: composeValidators(
+    isRequired('Description'),
+    hasLengthGreaterThan(5)({
+      message: 'Description needs to be at least 5 characters',
+    })
+  )(),
+  city: isRequired('City'),
+  venue: isRequired('Venue'),
+  date: isRequired('Date'),
+  time: isRequired('Time'),
+});
 
 interface DetailParams {
   id: string;
@@ -26,47 +48,22 @@ const ActivityForm: React.FC<RouteComponentProps<DetailParams>> = ({
     editActivity,
     submitting,
     loadActivity,
-    clearActivity,
   } = activityStore;
 
-  const [activityForForm, setActivity] = useState<Activity>({
-    id: '',
-    title: '',
-    description: '',
-    category: '',
-    date: null,
-    city: '',
-    venue: '',
-  });
+  const [activityForForm, setActivity] = useState(new ActivityFormViewModel());
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     async function fetchData() {
       if (match.params.id) {
+        setLoading(true);
         const result = await loadActivity(match.params.id);
-        setActivity(result!);
+        setActivity(new ActivityFormViewModel(result));
+        setLoading(false);
       }
     }
     fetchData();
-    return () => {
-      clearActivity();
-    };
-  }, [match.params.id, loadActivity, setActivity, clearActivity]);
-
-  // const handleSubmit = () => {
-  //   if (activityForForm.id.length === 0) {
-  //     const newActivity = {
-  //       ...activityForForm,
-  //       id: uuid(),
-  //     };
-  //     createActivity(newActivity).then(() =>
-  //       history.push(`/activities/${newActivity.id}/details`)
-  //     );
-  //   } else {
-  //     editActivity(activityForForm).then(() =>
-  //       history.push(`/activities/${activityForForm.id}/details`)
-  //     );
-  //   }
-  // };
+  }, [match.params.id, loadActivity, setActivity]);
 
   const handleCancel = () => {
     if (!match.params.id) {
@@ -77,7 +74,19 @@ const ActivityForm: React.FC<RouteComponentProps<DetailParams>> = ({
   };
 
   const handleFinalFormSubmit = (values: any) => {
-    console.log(values);
+    const dateAndTime = combinedDateAndTime(values.date, values.time);
+    const { date, time, ...activity } = values;
+    activity.date = dateAndTime;
+
+    if (!activity.id) {
+      const newActivity = {
+        ...activity,
+        id: uuid(),
+      };
+      createActivity(newActivity);
+    } else {
+      editActivity(activity);
+    }
   };
 
   return (
@@ -85,9 +94,11 @@ const ActivityForm: React.FC<RouteComponentProps<DetailParams>> = ({
       <Grid.Column width={10}>
         <Segment clearing>
           <FinalForm
+            validate={validate}
+            initialValues={activityForForm}
             onSubmit={handleFinalFormSubmit}
-            render={({ handleSubmit }) => (
-              <Form onSubmit={handleSubmit}>
+            render={({ handleSubmit, invalid, pristine }) => (
+              <Form onSubmit={handleSubmit} loading={loading}>
                 <Field
                   name='title'
                   placeholder='Title'
@@ -108,13 +119,23 @@ const ActivityForm: React.FC<RouteComponentProps<DetailParams>> = ({
                   options={category}
                   component={SelectInput as React.FC}
                 />
-                <Field
-                  component={DateInput as React.FC}
-                  name='date'
-                  date={true}
-                  placeholder='Date'
-                  value={activityForForm.date}
-                />
+                <Form.Group widths='equal'>
+                  <Field
+                    component={DateInput as React.FC}
+                    name='date'
+                    date={true}
+                    placeholder='Date'
+                    value={activityForForm.date}
+                  />
+                  <Field
+                    component={DateInput as React.FC}
+                    name='time'
+                    time={true}
+                    placeholder='Time'
+                    value={activityForForm.time}
+                  />
+                </Form.Group>
+
                 <Field
                   component={TextInput as React.FC}
                   name='city'
@@ -133,12 +154,14 @@ const ActivityForm: React.FC<RouteComponentProps<DetailParams>> = ({
                   positive
                   type='submit'
                   content='Submit'
+                  disabled={loading || invalid || pristine}
                 />
                 <Button
                   floated='right'
                   type='button'
                   content='Cancel'
                   onClick={handleCancel}
+                  disabled={loading}
                 />
               </Form>
             )}
