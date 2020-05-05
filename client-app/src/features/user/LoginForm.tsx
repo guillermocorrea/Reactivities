@@ -27,10 +27,8 @@ const LoginForm = () => {
       }
       render={({
         handleSubmit,
-        submitting,
-        form,
         submitError,
-        invalid,
+        errors,
         pristine,
         dirtySinceLastSubmit,
       }) => (
@@ -58,14 +56,12 @@ const LoginForm = () => {
                 error={submitError}
                 text='Invalid email or password'
               />
-              <br />
-              <br />
             </>
           )}
           <Button
             color='teal'
             content='Login'
-            disabled={invalid || pristine}
+            disabled={Object.keys(errors).length > 0 || pristine}
             fluid
           />
         </Form>

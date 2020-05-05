@@ -33,6 +33,7 @@ const RegisterForm = () => {
         invalid,
         pristine,
         dirtySinceLastSubmit,
+        errors,
       }) => (
         <Form onSubmit={handleSubmit} error>
           <Header
@@ -72,7 +73,7 @@ const RegisterForm = () => {
           <Button
             color='teal'
             content='Register'
-            disabled={invalid || pristine}
+            disabled={Object.keys(errors).length > 0 || pristine}
             fluid
           />
         </Form>
