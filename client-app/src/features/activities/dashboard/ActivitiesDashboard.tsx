@@ -3,11 +3,12 @@ import React, { useContext, useEffect } from 'react';
 import { Grid } from 'semantic-ui-react';
 
 import ActivityList from './ActivityList';
-import ActivityStore from '../../../app/stores/activityStore';
 import { LoadingComponent } from 'app/layout/LoadingComponent';
+import { RootStoreContext } from 'app/stores/rootStore';
 
 export const ActivitiesDashboard: React.FC = () => {
-  const activityStore = useContext(ActivityStore);
+  const rootStore = useContext(RootStoreContext);
+  const { activityStore } = rootStore;
 
   useEffect(() => {
     activityStore.loadActivities();

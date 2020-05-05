@@ -1,9 +1,22 @@
+import { UserFormValues } from './../models/user';
 import { history } from './../../index';
 import { Activity } from './../models/activity';
 import axios, { AxiosResponse } from 'axios';
 import { toast } from 'react-toastify';
+import { User } from 'app/models/user';
 
 axios.defaults.baseURL = 'http://localhost:5000/api';
+
+axios.interceptors.request.use(
+  (config) => {
+    const token = window.localStorage.getItem('jwt');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
 
 axios.interceptors.response.use(undefined, (error) => {
   if (error.message === 'Network Error' && !error.response) {
@@ -24,7 +37,7 @@ axios.interceptors.response.use(undefined, (error) => {
     toast.error('Server error - Please try again later.');
   }
   console.log(error.response);
-  throw error;
+  throw error.response;
 });
 
 const responseBody = (response: AxiosResponse) => response.data;
@@ -53,6 +66,15 @@ const Activities = {
   delete: (id: string) => requests.del(`/activities/${id}`),
 };
 
+const UserService = {
+  current: (): Promise<User> => requests.get('/user'),
+  login: (user: UserFormValues): Promise<User> =>
+    requests.post('/user/login', user),
+  register: (user: UserFormValues): Promise<User> =>
+    requests.post('/user/register', user),
+};
+
 export default {
   Activities,
+  UserService,
 };
