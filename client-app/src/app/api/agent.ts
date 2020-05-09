@@ -64,6 +64,8 @@ const Activities = {
   update: (id: string, activity: Activity) =>
     requests.put(`/activities/${id}`, activity),
   delete: (id: string) => requests.del(`/activities/${id}`),
+  attend: (id: string) => requests.post(`/activities/${id}/attend`, {}),
+  unattend: (id: string) => requests.del(`/activities/${id}/attend`),
 };
 
 const UserService = {
