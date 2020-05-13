@@ -1,3 +1,4 @@
+import { Profile, Photo } from './../models/profile';
 import { UserFormValues } from './../models/user';
 import { history } from './../../index';
 import { Activity } from './../models/activity';
@@ -55,6 +56,15 @@ const requests = {
   post: (url: string, body: {}) => axios.post(url, body).then(responseBody),
   put: (url: string, body: {}) => axios.put(url, body).then(responseBody),
   del: (url: string) => axios.delete(url).then(responseBody),
+  postForm: (url: string, file: Blob) => {
+    const formData = new FormData();
+    formData.append('File', file);
+    return axios
+      .post(url, formData, {
+        headers: { 'Content-type': 'multipart/form-data' },
+      })
+      .then(responseBody);
+  },
 };
 
 const Activities = {
@@ -76,7 +86,17 @@ const UserService = {
     requests.post('/user/register', user),
 };
 
+const Profiles = {
+  get: (username: string): Promise<Profile> =>
+    requests.get(`/profiles/${username}`),
+  uploadPhoto: (photo: Blob): Promise<Photo> =>
+    requests.postForm(`/photos`, photo),
+  setMainPhoto: (id: string) => requests.post(`/photos/${id}/setmain`, {}),
+  deletePhoto: (id: string) => requests.del(`/photos/${id}`),
+};
+
 export default {
   Activities,
   UserService,
+  Profiles,
 };

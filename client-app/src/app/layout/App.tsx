@@ -19,6 +19,7 @@ import LoginForm from 'features/user/LoginForm';
 import { RootStoreContext } from 'app/stores/rootStore';
 import { LoadingComponent } from './LoadingComponent';
 import ModalModalContainer from 'app/common/modals/ModalContainer';
+import ProfilePage from 'features/profiles/ProfilePage';
 
 const App: React.FC<RouteComponentProps> = ({ location }) => {
   const rootStore = useContext(RootStoreContext);
@@ -66,6 +67,11 @@ const App: React.FC<RouteComponentProps> = ({ location }) => {
                   key={location.key}
                 />
                 <Route path='/login' exact component={LoginForm} />
+                <Route
+                  path='/profile/:username'
+                  exact
+                  component={ProfilePage}
+                />
                 <Route component={NotFound} />
               </Switch>
             </Container>
