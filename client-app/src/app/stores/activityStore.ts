@@ -6,6 +6,12 @@ import { observable, action, computed, runInAction } from 'mobx';
 import { SyntheticEvent } from 'react';
 import agent from '../api/agent';
 import { setActivityProps, createAttendee } from 'app/common/util/util';
+import {
+  HubConnection,
+  HubConnectionBuilder,
+  LogLevel,
+  HubConnectionState,
+} from '@microsoft/signalr';
 
 export default class ActivityStore {
   rootStore: RootStore;
@@ -17,6 +23,56 @@ export default class ActivityStore {
   @observable target = '';
   @observable activitiesLoaded = false;
   @observable loading = false;
+  @observable.ref hubConnection: HubConnection | null = null;
+
+  @action createHubConnection = () => {
+    this.hubConnection = new HubConnectionBuilder()
+      .withUrl('http://localhost:5000/chat', {
+        accessTokenFactory: () => this.rootStore.commonStore.token!,
+      })
+      .configureLogging(LogLevel.Information)
+      .build();
+
+    this.hubConnection
+      .start()
+      .then(() => console.log(this.hubConnection!.state))
+      .then(() => {
+        console.log('Attempting to joing group', this.activity!.id);
+        this.hubConnection!.invoke('AddToGroup', this.activity!.id);
+      })
+      .catch((error) => console.log('Error establishing connection', error));
+
+    this.hubConnection.on('ReceiveComment', (comment) => {
+      console.log(comment);
+      runInAction(() => {
+        this.activity!.comments.push(comment);
+      });
+    });
+
+    this.hubConnection.on('Send', (message) => {
+      toast.info(message);
+    });
+  };
+
+  @action stopHubConnection = () => {
+    console.log('stopHubConnection', this.activity!.id);
+    this.hubConnection!.invoke('RemoveFromGroup', this.activity!.id)
+      .then(() => {
+        this.hubConnection?.stop();
+      })
+      .then(() => console.log('Connection stopped'))
+      .catch(console.log);
+  };
+
+  @action addComment = async (values: any) => {
+    debugger;
+    values.activityId = this.activity!.id;
+    try {
+      await this.hubConnection!.invoke('SendComment', values);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   @computed get activitiesByDate() {
     return this.groupActivitiesByDate(
@@ -145,6 +201,7 @@ export default class ActivityStore {
       const attendee = createAttendee(this.rootStore.userStore.user!);
       attendee.isHost = true;
       activity.attendees = [attendee];
+      activity.comments = [];
       activity.isHost = true;
       runInAction('create acitivity', () => {
         this.activityRegistry.set(activity.id, activity);

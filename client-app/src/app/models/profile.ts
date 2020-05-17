@@ -6,6 +6,11 @@ export interface Profile {
   photos: Photo[];
 }
 
+export interface ProfileFormValues extends Partial<Profile> {
+  displayName: string;
+  bio: string;
+}
+
 export interface Photo {
   id: string;
   url: string;

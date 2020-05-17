@@ -1,4 +1,4 @@
-import { Profile, Photo } from './../models/profile';
+import { Profile, Photo, ProfileFormValues } from './../models/profile';
 import { UserFormValues } from './../models/user';
 import { history } from './../../index';
 import { Activity } from './../models/activity';
@@ -93,6 +93,8 @@ const Profiles = {
     requests.postForm(`/photos`, photo),
   setMainPhoto: (id: string) => requests.post(`/photos/${id}/setmain`, {}),
   deletePhoto: (id: string) => requests.del(`/photos/${id}`),
+  updateProfile: (profile: ProfileFormValues) =>
+    requests.put('/profiles', profile),
 };
 
 export default {

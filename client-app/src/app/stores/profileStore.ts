@@ -1,5 +1,5 @@
 import { toast } from 'react-toastify';
-import { Profile, Photo } from './../models/profile';
+import { Profile, Photo, ProfileFormValues } from './../models/profile';
 import { RootStore } from './rootStore';
 import { observable, action, runInAction, computed } from 'mobx';
 import agent from 'app/api/agent';
@@ -93,6 +93,24 @@ export default class ProfileStore {
     } catch (error) {
       toast.error('Error deleting photo');
       runInAction(() => (this.loading = false));
+    }
+  };
+
+  @action updateProfile = async (profile: ProfileFormValues) => {
+    this.loading = true;
+    try {
+      await agent.Profiles.updateProfile(profile);
+      runInAction(() => {
+        this.profile!.displayName = profile.displayName;
+        this.profile!.bio = profile.bio;
+        this.rootStore.userStore.user!.displayName = profile.displayName;
+        this.loading = false;
+      });
+    } catch (error) {
+      toast.error('Problem updating profile');
+      runInAction(() => {
+        this.loading = false;
+      });
     }
   };
 }

@@ -9,6 +9,16 @@ export interface Activity {
   isGoing: boolean;
   isHost: boolean;
   attendees: Attendee[];
+  comments: Comment[];
+}
+
+export interface Comment {
+  id: string;
+  createdAt: Date;
+  body: string;
+  username: string;
+  displayName: string;
+  image: string;
 }
 
 export interface ActivityFormValues extends Partial<Activity> {
