@@ -4,6 +4,9 @@ export interface Profile {
   bio: string;
   image: string;
   photos: Photo[];
+  following: boolean;
+  followersCount: number;
+  followingsCount: number;
 }
 
 export interface ProfileFormValues extends Partial<Profile> {

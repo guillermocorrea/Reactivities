@@ -10,7 +10,6 @@ import {
   HubConnection,
   HubConnectionBuilder,
   LogLevel,
-  HubConnectionState,
 } from '@microsoft/signalr';
 
 export default class ActivityStore {
