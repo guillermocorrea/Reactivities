@@ -20,6 +20,7 @@ import { RootStoreContext } from 'app/stores/rootStore';
 import { LoadingComponent } from './LoadingComponent';
 import ModalModalContainer from 'app/common/modals/ModalContainer';
 import ProfilePage from 'features/profiles/ProfilePage';
+import PrivateRoute from './PrivateRoute';
 
 const App: React.FC<RouteComponentProps> = ({ location }) => {
   const rootStore = useContext(RootStoreContext);
@@ -50,24 +51,24 @@ const App: React.FC<RouteComponentProps> = ({ location }) => {
             <NavBar />
             <Container style={{ marginTop: '7em' }}>
               <Switch>
-                <Route
+                <PrivateRoute
                   path='/activities'
                   exact
                   component={ActivitiesDashboard}
                 />
-                <Route
+                <PrivateRoute
                   path='/activities/:id/details'
                   exact
                   component={ActivityDetails}
                 />
-                <Route
+                <PrivateRoute
                   path={['/activities/create', '/activities/edit/:id']}
                   exact
                   component={ActivityForm}
                   key={location.key}
                 />
                 <Route path='/login' exact component={LoginForm} />
-                <Route
+                <PrivateRoute
                   path='/profile/:username'
                   exact
                   component={ProfilePage}

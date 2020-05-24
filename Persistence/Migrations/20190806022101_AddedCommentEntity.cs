@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Persistence.Migrations
 {
-    public partial class AddComment : Migration
+    public partial class AddedCommentEntity : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

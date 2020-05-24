@@ -6,6 +6,7 @@ import LoginForm from 'features/user/LoginForm';
 import RegisterForm from 'features/user/RegisterForm';
 
 const HomePage = () => {
+  const token = window.localStorage.getItem('jwt');
   const rootStore = useContext(RootStoreContext);
   const { isLoggedIn, user } = rootStore.userStore;
   const { openModal } = rootStore.modalStore;
@@ -22,7 +23,7 @@ const HomePage = () => {
           />
           Reactivities
         </Header>
-        {isLoggedIn && user ? (
+        {isLoggedIn && user && token ? (
           <>
             <Header
               as='h2'

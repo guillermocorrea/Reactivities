@@ -2,7 +2,7 @@
 
 namespace Persistence.Migrations
 {
-    public partial class PhotoAdded : Migration
+    public partial class PhotoEntityAdded : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

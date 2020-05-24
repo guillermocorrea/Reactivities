@@ -2,13 +2,11 @@ import { Attendee } from './../../models/activity';
 import { Activity } from 'app/models/activity';
 import { User } from 'app/models/user';
 export const combinedDateAndTime = (date: Date, time: Date) => {
-  const timeString = time.getHours() + ':' + time.getMinutes() + ':00';
   const year = date.getFullYear();
   const month = date.getMonth() + 1;
   const day = date.getDate();
-  const dateString = `${year}-${month}-${day}`;
 
-  return new Date(dateString + ' ' + timeString);
+  return new Date(year, month, day, time.getHours(), time.getMinutes());
 };
 
 export const setActivityProps = (activity: Activity, user: User) => {

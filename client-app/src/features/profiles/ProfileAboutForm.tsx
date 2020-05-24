@@ -21,7 +21,6 @@ const ProfileAboutForm: React.FC<Props> = ({ profile }) => {
   const { loading, updateProfile } = rootStore.profileStore;
 
   const handleFormSubmit = (values: ProfileFormValues) => {
-    console.log(values);
     updateProfile(values);
   };
 

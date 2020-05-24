@@ -2,7 +2,14 @@ import { RootStore } from './rootStore';
 import { toast } from 'react-toastify';
 import { history } from './../../index';
 import { Activity } from './../models/activity';
-import { observable, action, computed, runInAction, reaction } from 'mobx';
+import {
+  observable,
+  action,
+  computed,
+  runInAction,
+  reaction,
+  toJS,
+} from 'mobx';
 import { SyntheticEvent } from 'react';
 import agent from '../api/agent';
 import { setActivityProps, createAttendee } from 'app/common/util/util';
@@ -55,13 +62,12 @@ export default class ActivityStore {
   }
 
   @action setPage = (page: number) => {
-    console.log('setPAge', page);
     this.page = page;
   };
 
   @action createHubConnection = () => {
     this.hubConnection = new HubConnectionBuilder()
-      .withUrl('http://localhost:5000/chat', {
+      .withUrl(process.env.REACT_APP_API_CHAT_URL!, {
         accessTokenFactory: () => this.rootStore.commonStore.token!,
       })
       .configureLogging(LogLevel.Information)
@@ -69,15 +75,12 @@ export default class ActivityStore {
 
     this.hubConnection
       .start()
-      .then(() => console.log(this.hubConnection!.state))
       .then(() => {
-        console.log('Attempting to joing group', this.activity!.id);
         this.hubConnection!.invoke('AddToGroup', this.activity!.id);
       })
       .catch((error) => console.log('Error establishing connection', error));
 
     this.hubConnection.on('ReceiveComment', (comment) => {
-      console.log(comment);
       runInAction(() => {
         this.activity!.comments.push(comment);
       });
@@ -89,7 +92,6 @@ export default class ActivityStore {
   };
 
   @action stopHubConnection = () => {
-    console.log('stopHubConnection', this.activity!.id);
     this.hubConnection!.invoke('RemoveFromGroup', this.activity!.id)
       .then(() => {
         this.hubConnection?.stop();
@@ -211,7 +213,7 @@ export default class ActivityStore {
     let activity = this.getActivity(id);
     if (activity) {
       this.activity = activity;
-      return activity;
+      return toJS(activity);
     }
     this.loadingInitial = true;
     try {

@@ -2,6 +2,7 @@ bin
 obj
 .vscode
 .DS_Store
-appsettings.json
 *.db
 node_modules
+wwwroot
+publish

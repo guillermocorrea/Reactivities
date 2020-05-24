@@ -16,13 +16,10 @@ function ActivityDetailsChat() {
     activity,
   } = rootStore.activityStore;
 
-  console.log('ActivityDetailsChat', activity);
-
   useEffect(() => {
     createHubConnection();
 
     return () => {
-      console.log('Cleaning up');
       stopHubConnection();
     };
   }, [createHubConnection, stopHubConnection]);
