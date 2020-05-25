@@ -160,15 +160,22 @@ namespace API
             app.UseCsp(opt => opt
                 .BlockAllMixedContent()
                 .StyleSources(x => x.Self()
-                    .CustomSources("https://fonts.googleapis.com",
-                    "sha256-F4GpCPyRepgP5znjMD8sc7PEjzet5Eef4r09dEGPpTs="))
+                    .CustomSources("https://fonts.googleapis.com"
+                    , "sha256-F4GpCPyRepgP5znjMD8sc7PEjzet5Eef4r09dEGPpTs="))
                 .FontSources(x => x.Self().CustomSources("https://fonts.gstatic.com", "data:"))
                 .FormActions(x => x.Self())
                 .FrameAncestors(x => x.Self())
-                .ImageSources(x => x.Self().CustomSources("https://res.cloudinary.com",
-                    "blob:",
-                    "data:"))
-                .ScriptSources(x => x.Self().CustomSources("sha256-zTmokOtDNMlBIULqs//ZgFtzokerG72Q30ccMjdGbSA="))
+                .ImageSources(x => x.Self().CustomSources("https://res.cloudinary.com"
+                    , "blob:"
+                    , "data:"
+                    , "https://web.facebook.com"
+                    , "https://scontent.fbog2-3.fna.fbcdn.net"
+                    , "https://www.facebook.com"
+                    , "https://*.facebook.com"
+                    , "https://*.fbcdn.net"
+                    , "https://*.facebook.net"))
+                .ScriptSources(x => x.Self().CustomSources("sha256-zTmokOtDNMlBIULqs//ZgFtzokerG72Q30ccMjdGbSA="
+                    , "https://connect.facebook.net"))
             );
 
             // app.UseHttpsRedirection();
