@@ -1,6 +1,5 @@
 using System.Threading.Tasks;
 using Application.User;
-using Domain;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -26,6 +25,13 @@ namespace API.Controllers
         public async Task<ActionResult<User>> currentUser()
         {
             return await Mediator.Send(new CurrentUser.Query());
+        }
+
+        [HttpPost("facebook")]
+        [AllowAnonymous]
+        public async Task<ActionResult<User>> FacebookLogin(ExternalLogin.Query query)
+        {
+            return await Mediator.Send(query);
         }
     }
 }

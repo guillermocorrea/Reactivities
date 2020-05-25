@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using Microsoft.AspNetCore.Identity;
 
 namespace Domain
@@ -7,7 +8,8 @@ namespace Domain
     {
         public AppUser()
         {
-            this.UserActivities = new List<UserActivity>();
+            UserActivities = new Collection<UserActivity>();
+            Photos = new Collection<Photo>();
         }
 
         public string DisplayName { get; set; }

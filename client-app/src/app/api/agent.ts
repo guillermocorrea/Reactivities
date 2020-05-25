@@ -81,6 +81,8 @@ const UserService = {
     requests.post('/user/login', user),
   register: (user: UserFormValues): Promise<User> =>
     requests.post('/user/register', user),
+  fbLogin: (accessToken: string) =>
+    requests.post(`/user/facebook`, { accessToken }),
 };
 
 const Profiles = {
