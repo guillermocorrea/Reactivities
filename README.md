@@ -11,6 +11,8 @@ TokenKey = ****
 Cloudinary:CloudName = ****
 Cloudinary:ApiSecret = ****
 Cloudinary:ApiKey = ****
+Authentication:Facebook:AppSecret = your-fb-app-secret
+Authentication:Facebook:AppId = your-fb-app-id
 ```
 
 ## Publish
