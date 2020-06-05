@@ -45,6 +45,11 @@ namespace Persistence
                 }
             }
 
+            await SeedActivities(context);
+        }
+
+        public static async Task SeedActivities(DataContext context)
+        {
             if (!context.Activities.Any())
             {
                 var activities = new List<Activity>

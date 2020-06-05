@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API", "API\API.csproj", "{D
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{A115FAD1-8359-4D14-8E07-1B1A2C3D5877}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{D3064CEF-292F-493E-AD57-CC9B69ACAE42}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -98,5 +100,17 @@ Global
 		{F9E4D3B9-8848-4481-8B12-0CDF5E6DE38D}.Release|x64.Build.0 = Release|Any CPU
 		{F9E4D3B9-8848-4481-8B12-0CDF5E6DE38D}.Release|x86.ActiveCfg = Release|Any CPU
 		{F9E4D3B9-8848-4481-8B12-0CDF5E6DE38D}.Release|x86.Build.0 = Release|Any CPU
+		{D3064CEF-292F-493E-AD57-CC9B69ACAE42}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D3064CEF-292F-493E-AD57-CC9B69ACAE42}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D3064CEF-292F-493E-AD57-CC9B69ACAE42}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{D3064CEF-292F-493E-AD57-CC9B69ACAE42}.Debug|x64.Build.0 = Debug|Any CPU
+		{D3064CEF-292F-493E-AD57-CC9B69ACAE42}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D3064CEF-292F-493E-AD57-CC9B69ACAE42}.Debug|x86.Build.0 = Debug|Any CPU
+		{D3064CEF-292F-493E-AD57-CC9B69ACAE42}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D3064CEF-292F-493E-AD57-CC9B69ACAE42}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D3064CEF-292F-493E-AD57-CC9B69ACAE42}.Release|x64.ActiveCfg = Release|Any CPU
+		{D3064CEF-292F-493E-AD57-CC9B69ACAE42}.Release|x64.Build.0 = Release|Any CPU
+		{D3064CEF-292F-493E-AD57-CC9B69ACAE42}.Release|x86.ActiveCfg = Release|Any CPU
+		{D3064CEF-292F-493E-AD57-CC9B69ACAE42}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
