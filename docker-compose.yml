@@ -1,0 +1,32 @@
+version: '3.0'
+
+services:
+  db:
+    image: mcr.microsoft.com/mssql/server
+    environment:
+      SA_PASSWORD: 'Your_password123'
+      ACCEPT_EULA: 'Y'
+    restart: always
+
+  start_dependencies:
+    image: dadarek/wait-for-dependencies
+    depends_on:
+      - db
+    command: db:1433
+
+  reactivitiesapp:
+    depends_on:
+      - start_dependencies
+    image: guillermocorrea/reactivities:latest
+    build:
+      context: .
+    ports:
+      - '8080:5000'
+    environment:
+      - TokenKey='super secret token key goes here'
+      - ConnectionStrings__DefaultConnection=Server=db;Database=reactivities;User=sa;Password=Your_password123;
+    restart:
+      always
+
+volumes:
+  dbdata:
