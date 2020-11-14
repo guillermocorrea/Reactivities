@@ -2,32 +2,32 @@ name: .NET Core
 
 on:
   push:
-    branches: [ master ]
+    branches: [master]
   pull_request:
-    branches: [ master ]
+    branches: [master]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Setup .NET Core
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 3.1.301
-    
-    - uses: actions/checkout@v2
-    - uses: actions/setup-node@v2-beta
-      with:
-        node-version: '12'
+      - uses: actions/checkout@v2
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 3.1.301
+      - uses: actions/setup-node@v2-beta
+        with:
+          node-version: "12"
 
-    - name: Install dependencies .net
-      run: dotnet restore
-      
-    - name: Build .net
-      run: dotnet build --configuration Release --no-restore
-      
-    - name: Test .net
-      run: dotnet test --no-restore --verbosity normal
+      - name: Client build
+        run: cd client-app && npm ci && npm run build && cd ..
+
+      - name: Install dependencies .net
+        run: dotnet restore
+
+      - name: Build .net
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Test .net
+        run: dotnet test --no-restore --verbosity normal

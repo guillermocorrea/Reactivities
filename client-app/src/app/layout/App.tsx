@@ -1,8 +1,5 @@
-import ActivityDetails from 'features/activities/details/ActivityDetails';
-import ActivityForm from 'features/activities/form/ActivityForm';
-import HomePage from 'home/HomePage';
 import { observer } from 'mobx-react-lite';
-import React, { Fragment, useContext, useEffect } from 'react';
+import React, { Fragment, Suspense, useContext, useEffect } from 'react';
 import {
   Route,
   withRouter,
@@ -11,16 +8,20 @@ import {
 } from 'react-router-dom';
 import { Container } from 'semantic-ui-react';
 
-import ActivitiesDashboard from '../../features/activities/dashboard/ActivitiesDashboard';
-import NavBar from '../../features/nav/NavBar';
-import NotFound from './NotFound';
 import { ToastContainer } from 'react-toastify';
 import LoginForm from 'features/user/LoginForm';
 import { RootStoreContext } from 'app/stores/rootStore';
 import { LoadingComponent } from './LoadingComponent';
-import ModalModalContainer from 'app/common/modals/ModalContainer';
-import ProfilePage from 'features/profiles/ProfilePage';
-import PrivateRoute from './PrivateRoute';
+
+const HomePage = React.lazy(() => import('home/HomePage'));
+const ActivitiesDashboard = React.lazy(() => import('../../features/activities/dashboard/ActivitiesDashboard'));
+const NotFound = React.lazy(() => import('./NotFound'));
+const NavBar = React.lazy(() => import('../../features/nav/NavBar'));
+const ModalModalContainer = React.lazy(() => import('app/common/modals/ModalContainer'));
+const ProfilePage = React.lazy(() => import('features/profiles/ProfilePage'));
+const PrivateRoute = React.lazy(() => import('./PrivateRoute'));
+const ActivityDetails = React.lazy(() => import('features/activities/details/ActivityDetails'));
+const ActivityForm = React.lazy(() => import('features/activities/form/ActivityForm'));
 
 const App: React.FC<RouteComponentProps> = ({ location }) => {
   const rootStore = useContext(RootStoreContext);
@@ -41,44 +42,46 @@ const App: React.FC<RouteComponentProps> = ({ location }) => {
 
   return (
     <Fragment>
-      <ModalModalContainer />
-      <ToastContainer position='bottom-right' />
-      <Route path='/' exact component={HomePage} />
-      <Route
-        path={'/(.+)'}
-        render={() => (
-          <>
-            <NavBar />
-            <Container style={{ marginTop: '7em' }}>
-              <Switch>
-                <PrivateRoute
-                  path='/activities'
-                  exact
-                  component={ActivitiesDashboard}
-                />
-                <PrivateRoute
-                  path='/activities/:id/details'
-                  exact
-                  component={ActivityDetails}
-                />
-                <PrivateRoute
-                  path={['/activities/create', '/activities/edit/:id']}
-                  exact
-                  component={ActivityForm}
-                  key={location.key}
-                />
-                <Route path='/login' exact component={LoginForm} />
-                <PrivateRoute
-                  path='/profile/:username'
-                  exact
-                  component={ProfilePage}
-                />
-                <Route component={NotFound} />
-              </Switch>
-            </Container>
-          </>
-        )}
-      />
+      <Suspense fallback="Suspense...">
+        <ModalModalContainer />
+        <ToastContainer position='bottom-right' />
+        <Route path='/' exact component={HomePage} />
+        <Route
+          path={'/(.+)'}
+          render={() => (
+            <>
+              <NavBar />
+              <Container style={{ marginTop: '7em' }}>
+                <Switch>
+                  <PrivateRoute
+                    path='/activities'
+                    exact
+                    component={ActivitiesDashboard}
+                  />
+                  <PrivateRoute
+                    path='/activities/:id/details'
+                    exact
+                    component={ActivityDetails}
+                  />
+                  <PrivateRoute
+                    path={['/activities/create', '/activities/edit/:id']}
+                    exact
+                    component={ActivityForm}
+                    key={location.key}
+                  />
+                  <Route path='/login' exact component={LoginForm} />
+                  <PrivateRoute
+                    path='/profile/:username'
+                    exact
+                    component={ProfilePage}
+                  />
+                  <Route component={NotFound} />
+                </Switch>
+              </Container>
+            </>
+          )}
+        />
+      </Suspense>
     </Fragment>
   );
 };

@@ -101,7 +101,6 @@ export default class ActivityStore {
   };
 
   @action addComment = async (values: any) => {
-    debugger;
     values.activityId = this.activity!.id;
     try {
       await this.hubConnection!.invoke('SendComment', values);

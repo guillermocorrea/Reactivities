@@ -15,7 +15,7 @@ const ErrorMessage: React.FC<Props> = ({ error, text }) => {
         <MessageList>
           {Object.values(error.data.errors)
             .flat()
-            .map((err, i) => (
+            .map((err: any, i) => (
               <Message.Item key={i}>{err}</Message.Item>
             ))}
         </MessageList>
