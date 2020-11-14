@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: [master]
 
+env:
+  AZURE_WEBAPP_NAME: reactivities-lc
+  NETCORE_VERSION: "3.1.101"
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -31,3 +35,13 @@ jobs:
 
       - name: Test .net
         run: dotnet test --no-restore --verbosity normal
+
+      - name: Publish .net
+        run: dotnet publish -c Release -o publish --self-contained false Reactivities.sln
+
+      - name: Deploy to Azure
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          package: ./publish
