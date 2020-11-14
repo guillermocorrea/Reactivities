@@ -16,10 +16,12 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - name: Setup .NET Core
+
+      - name: Set up .NET Core
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: 3.1.301
+          dotnet-version: "3.1.102"
+
       - uses: actions/setup-node@v2-beta
         with:
           node-version: "12.18.3"
@@ -36,5 +38,13 @@ jobs:
       - name: Test .net
         run: dotnet test --no-restore --verbosity normal
 
-      - name: Publish .net
-        run: dotnet publish -c Release -o publish --self-contained false Reactivities.sln
+      - name: dotnet publish
+        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
+
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: "reactivities-lc"
+          slot-name: "production"
+          publish-profile: ${{ secrets.AzureAppService_PublishProfile_4a0eaabedae14f209d059eca9b4648ff }}
+          package: ${{env.DOTNET_ROOT}}/myapp
