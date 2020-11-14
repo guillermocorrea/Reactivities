@@ -8,7 +8,7 @@ on:
 
 env:
   AZURE_WEBAPP_NAME: reactivities-lc
-  NETCORE_VERSION: "5.0.0"
+  NETCORE_VERSION: "5.0.x"
 
 jobs:
   build:
@@ -20,7 +20,7 @@ jobs:
       - name: Set up .NET Core
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: "5.0.0"
+          dotnet-version: "5.0.x"
 
       - uses: actions/setup-node@v2-beta
         with:
