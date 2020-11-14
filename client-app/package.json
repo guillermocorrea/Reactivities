@@ -2,6 +2,9 @@
   "name": "client-app",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": "12.18.3"
+  },
   "dependencies": {
     "@microsoft/signalr": "^3.1.4",
     "@testing-library/jest-dom": "^4.2.4",

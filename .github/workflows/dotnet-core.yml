@@ -18,7 +18,7 @@ jobs:
           dotnet-version: 3.1.301
       - uses: actions/setup-node@v2-beta
         with:
-          node-version: "12"
+          node-version: "12.18.3"
 
       - name: Client build
         run: cd client-app && npm ci && npm run build && cd ..
