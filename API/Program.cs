@@ -14,20 +14,25 @@ namespace API
     {
         public static void Main(string[] args)
         {
-            var host = CreateHostBuilder(args).Build();
+            var host = CreateHostBuilder(args)
+            .ConfigureLogging(builder => builder.AddAzureWebAppDiagnostics())
+            .Build();
             using (var scope = host.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
+                var logger = services.GetRequiredService<ILogger<Program>>();
+                logger.LogInformation("Migrating database...");
                 try
                 {
                     var context = services.GetRequiredService<DataContext>();
                     var userManager = services.GetRequiredService<UserManager<AppUser>>();
                     context.Database.Migrate();
+                    logger.LogInformation("Database migrated...");
                     Seed.SeedData(context, userManager).Wait();
+                    logger.LogInformation("Seeding data completed...");
                 }
                 catch (Exception ex)
                 {
-                    var logger = services.GetRequiredService<ILogger<Program>>();
                     logger.LogError(ex, "An error occured during migration");
                 }
             }
