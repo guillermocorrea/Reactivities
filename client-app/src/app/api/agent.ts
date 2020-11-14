@@ -103,8 +103,10 @@ const Profiles = {
     requests.get(`/profiles/${username}/activities?predicate=${predicate}`),
 };
 
-export default {
+const service = {
   Activities,
   UserService,
   Profiles,
 };
+
+export default service;
