@@ -1,5 +1,5 @@
 # Build
-FROM mcr.microsoft.com/dotnet/core/sdk:3.1 as build-image
+FROM mcr.microsoft.com/dotnet/sdk:5.0 as build-image
 WORKDIR /home/app
 
 COPY ./*.sln ./
@@ -16,7 +16,7 @@ RUN dotnet test
 RUN dotnet publish ./API/API.csproj -o /publish/
 
 # Run
-FROM mcr.microsoft.com/dotnet/core/aspnet:3.1
+FROM mcr.microsoft.com/dotnet/aspnet:5.0
 WORKDIR /publish
 COPY --from=build-image /publish .
 ENV ASPNETCORE_URLS="http://0.0.0.0:5000"

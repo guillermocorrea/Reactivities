@@ -17,6 +17,7 @@ namespace API
             var host = CreateHostBuilder(args)
             .ConfigureLogging(builder => builder.AddAzureWebAppDiagnostics())
             .Build();
+#if Debug
             using (var scope = host.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
@@ -36,6 +37,7 @@ namespace API
                     logger.LogError(ex, "An error occured during migration");
                 }
             }
+#endif
             host.Run();
         }
 
